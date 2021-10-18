@@ -30,26 +30,26 @@ public class FlightController {
     }
 
     @PostMapping
-    public ResponseEntity<Flight> createFlight(@RequestBody final Flight flight) {
+    public ResponseEntity<Flight> create(@RequestBody final Flight flight) {
         service.save(flight);
         return ResponseEntity.ok(flight);
     }
 
     @GetMapping
-    public @ResponseBody List<Flight> readAllFlights() {
+    public @ResponseBody List<Flight> readAll() {
         return service.selectAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Flight> readFlightById(@PathVariable final Integer id) {
+    public ResponseEntity<Flight> readById(@PathVariable final Integer id) {
         final Flight flight = service.selectById(id).orElseThrow(NotFoundException::new);
         return ResponseEntity.ok(flight);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateFlight(@PathVariable final Integer id, @RequestBody final Flight flight) {
+    public ResponseEntity<String> updateById(@PathVariable final Integer id, @RequestBody final Flight flight) {
         if(id != flight.getId()) {
-            return new ResponseEntity<String>("Entity id's don't match", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Entity ids don't match", HttpStatus.BAD_REQUEST);
         }
         final Flight _ogFlight = service.selectById(id).orElseThrow(NotFoundException::new);
         service.save(flight);
@@ -57,7 +57,7 @@ public class FlightController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFlight(@PathVariable final Integer id) {
+    public ResponseEntity<Void> deleteById(@PathVariable final Integer id) {
         final Flight flight = service.selectById(id).orElseThrow(NotFoundException::new);
         service.delete(flight);
         return ResponseEntity.noContent().build();
