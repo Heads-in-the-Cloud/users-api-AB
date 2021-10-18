@@ -3,11 +3,13 @@ package com.smoothstack.utopia.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.Column;
 
 @Entity
 @Table(name = "airport")
 public class Airport {
     @Id
+    @Column(name = "iata_id")
     private String code;
 
     private String city;

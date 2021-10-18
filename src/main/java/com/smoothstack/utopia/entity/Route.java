@@ -5,6 +5,8 @@ import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 
 @Entity
 @Table(name = "route")
@@ -13,7 +15,12 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "origin_id")
     private Airport origin;
+
+    @ManyToOne
+    @JoinColumn(name = "destination_id")
     private Airport destination;
 
     public Route() {

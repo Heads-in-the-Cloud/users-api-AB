@@ -16,12 +16,20 @@ public class FlightService {
         this.dao = dao;
     }
 
+    public void save(final Flight flight) {
+        dao.save(flight);
+    }
+
     public List<Flight> selectAll() {
         return dao.findAll();
     }
 
     public Optional<Flight> selectById(final Integer id) {
         return dao.findById(id);
+    }
+
+    public void delete(final Flight flight) throws Runtime{
+        dao.delete(flight);
     }
 }
 

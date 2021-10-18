@@ -7,17 +7,29 @@ import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 
 @Entity
 @Table(name = "flight")
 public class Flight {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "route_id")
     private Route route;
+
+    @ManyToOne
+    @JoinColumn(name = "airplane_id")
     private Airplane airplane;
+
+    @Column(name = "departure_time")
     private Timestamp timeOfDeparture;
+
+    @Column(name = "arrival_time")
     private Timestamp timeOfArrival;
 
     public Flight() {
