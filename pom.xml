@@ -13,10 +13,10 @@
   </parent>
 
   <groupId>com.smoothstack</groupId>
-  <artifactId>utopia</artifactId>
+  <artifactId>utopia-flights-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>utopia</name>
+  <name>utopia-flights-api</name>
   <description>MVP airport flight booking management system as a REST API</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
