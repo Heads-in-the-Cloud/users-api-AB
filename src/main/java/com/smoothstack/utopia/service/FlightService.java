@@ -28,7 +28,7 @@ public class FlightService {
         return dao.findById(id);
     }
 
-    public void delete(final Flight flight) throws Runtime{
+    public void delete(final Flight flight) {
         dao.delete(flight);
     }
 }

@@ -8,11 +8,16 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping("/flight")
@@ -20,7 +25,7 @@ public class FlightController {
 
     private final FlightService service;
 
-    public FlightController(FlightService service) {
+    public FlightController(final FlightService service) {
       this.service = service;
     }
 
@@ -42,9 +47,9 @@ public class FlightController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateFlight(@RequestBody final Flight flight) {
+    public ResponseEntity<String> updateFlight(@PathVariable final Integer id, @RequestBody final Flight flight) {
         if(id != flight.getId()) {
-            return ResponseEntity.badRequest("Entity id's don't match").build();
+            return new ResponseEntity<String>("Entity id's don't match", HttpStatus.BAD_REQUEST);
         }
         final Flight _ogFlight = service.selectById(id).orElseThrow(NotFoundException::new);
         service.save(flight);
