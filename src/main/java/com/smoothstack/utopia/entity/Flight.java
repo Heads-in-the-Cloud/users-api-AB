@@ -32,10 +32,6 @@ public class Flight {
     @Column(name = "arrival_time")
     private Timestamp timeOfArrival;
 
-    public Flight() {
-        this.airplane = new Airplane();
-        this.route = new Route();
-    }
     public Integer getId() {
         return id;
     }

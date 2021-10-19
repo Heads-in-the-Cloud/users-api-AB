@@ -19,9 +19,6 @@ public class Airplane {
     @JoinColumn(name = "type_id")
     private AirplaneType type;
 
-    public Airplane() {
-        this.type = new AirplaneType();
-    }
     public Integer getId() {
         return id;
     }

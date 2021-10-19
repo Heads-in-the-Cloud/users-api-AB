@@ -23,10 +23,6 @@ public class Route {
     @JoinColumn(name = "destination_id")
     private Airport destination;
 
-    public Route() {
-        this.origin = new Airport();
-        this.destination = new Airport();
-    }
     public Integer getId() {
         return id;
     }
