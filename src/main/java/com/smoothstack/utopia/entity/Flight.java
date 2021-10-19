@@ -29,8 +29,11 @@ public class Flight {
     @Column(name = "departure_time")
     private Timestamp timeOfDeparture;
 
-    @Column(name = "arrival_time")
-    private Timestamp timeOfArrival;
+    @Column(name = "reserved_seats")
+    private Integer reservedSeats;
+
+    @Column(name = "seat_price")
+    private Float seatPrice;
 
     public Integer getId() {
         return id;
@@ -56,10 +59,16 @@ public class Flight {
     public void setTimeOfDeparture(final Timestamp timeOfDeparture) {
         this.timeOfDeparture = timeOfDeparture;
     }
-    public Timestamp getTimeOfArrival() {
-        return timeOfArrival;
+    public Integer getReservedSeats() {
+        return reservedSeats;
     }
-    public void setTimeOfArrival(final Timestamp timeOfArrival) {
-        this.timeOfArrival = timeOfArrival;
+    public void setReservedSeats(final Integer reservedSeats) {
+        this.reservedSeats = reservedSeats;
+    }
+    public Float getSeatPrice() {
+        return seatPrice;
+    }
+    public void setSeatPrice(final Float seatPrice) {
+        this.seatPrice = seatPrice;
     }
 }
