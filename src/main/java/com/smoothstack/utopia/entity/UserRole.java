@@ -9,15 +9,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 
 @Entity
-@Table(name = "airplane")
-public class Airplane {
+@Table(name = "user_role")
+public class UserRole {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "type_id")
-    private AirplaneType type;
+    private String name;
 
     public Integer getId() {
         return id;
@@ -25,10 +23,10 @@ public class Airplane {
     public void setId(final Integer id) {
         this.id = id;
     }
-    public AirplaneType getType() {
-        return type;
+    public String getName() {
+        return name;
     }
-    public void setType(final AirplaneType type) {
-        this.type = type;
+    public void setName(final String name) {
+        this.name = name;
     }
 }

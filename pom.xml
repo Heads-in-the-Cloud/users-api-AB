@@ -13,10 +13,10 @@
   </parent>
 
   <groupId>com.smoothstack</groupId>
-  <artifactId>utopia-flights-api</artifactId>
+  <artifactId>utopia-users-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>utopia-flights-api</name>
+  <name>utopia-users-api</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
