@@ -10,28 +10,46 @@ import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "user")
 public class User {
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "role_id")
     private UserRole role;
 
+    @NotNull
+    @Size(max = 255)
     @Column(name = "given_name")
     private String givenName;
 
+    @NotNull
+    @Size(max = 255)
     @Column(name = "family_name")
     private String familyName;
 
+    @NotNull
+    @Size(max = 45)
     private String username;
 
+    @NotNull
+    @Size(max = 255)
+    private String email;
+
+    @NotNull
+    @Size(max = 255)
     private String password;
 
+    @NotNull
+    @Size(max = 45)
     private String phone;
 
     public Integer getId() {
@@ -63,6 +81,12 @@ public class User {
     }
     public void setUsername(final String username) {
         this.username = username;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(final String email) {
+        this.email = email;
     }
     public String getPassword() {
         return password;

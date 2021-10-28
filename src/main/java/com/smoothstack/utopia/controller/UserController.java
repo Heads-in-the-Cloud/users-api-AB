@@ -1,11 +1,12 @@
 package com.smoothstack.utopia.controller;
 
-import com.smoothstack.utopia.NotFoundException;
+import com.smoothstack.utopia.exception.*;
 import com.smoothstack.utopia.entity.User;
 import com.smoothstack.utopia.service.UserService;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService service;
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody final User user) {
+    public ResponseEntity<User> create(@Valid @RequestBody final User user) {
         service.save(user);
         return ResponseEntity.ok(user);
     }
@@ -47,9 +48,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateById(@PathVariable final Integer id, @RequestBody final User user) {
+    public ResponseEntity<String> updateById(@PathVariable final Integer id, @Valid @RequestBody final User user) {
         if(id != user.getId()) {
-            return new ResponseEntity<String>("Entity ids don't match", HttpStatus.BAD_REQUEST);
+            throw new InvalidUpdateIdException();
         }
         final User _ogUser = service.selectById(id).orElseThrow(NotFoundException::new);
         service.save(user);

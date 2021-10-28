@@ -1,11 +1,12 @@
 package com.smoothstack.utopia.controller;
 
-import com.smoothstack.utopia.NotFoundException;
+import com.smoothstack.utopia.exception.*;
 import com.smoothstack.utopia.entity.UserRole;
 import com.smoothstack.utopia.service.UserRoleService;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
-@RequestMapping("/user-role")
+@RequestMapping("/user-roles")
 public class UserRoleController {
 
     private final UserRoleService service;
@@ -30,7 +31,7 @@ public class UserRoleController {
     }
 
     @PostMapping
-    public ResponseEntity<UserRole> create(@RequestBody final UserRole userRole) {
+    public ResponseEntity<UserRole> create(@Valid @RequestBody final UserRole userRole) {
         service.save(userRole);
         return ResponseEntity.ok(userRole);
     }
@@ -47,9 +48,9 @@ public class UserRoleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateById(@PathVariable final Integer id, @RequestBody final UserRole userRole) {
+    public ResponseEntity<String> updateById(@PathVariable final Integer id, @Valid @RequestBody final UserRole userRole) {
         if(id != userRole.getId()) {
-            return new ResponseEntity<String>("UserRole ids don't match", HttpStatus.BAD_REQUEST);
+            throw new InvalidUpdateIdException();
         }
         final UserRole _ogUserRole = service.selectById(id).orElseThrow(NotFoundException::new);
         service.save(userRole);

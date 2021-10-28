@@ -7,14 +7,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "user_role")
 public class UserRole {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
+    @Size(max = 45)
     private String name;
 
     public Integer getId() {
