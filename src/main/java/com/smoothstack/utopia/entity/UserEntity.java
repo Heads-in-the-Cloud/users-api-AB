@@ -15,15 +15,34 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user")
+@NoArgsConstructor
 public class UserEntity {
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private Integer id;
+
+    public UserEntity(
+        final UserRole role,
+        final String givenName,
+        final String fimalyNaime,
+        final String username,
+        final String password,
+        final String email,
+        final String phone
+    ) {
+        this.role = role;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+    }
 
     @NotNull
     @ManyToOne

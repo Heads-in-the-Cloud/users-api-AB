@@ -17,7 +17,6 @@ import lombok.Setter;
 @Table(name = "user_role")
 public class UserRole {
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private Integer id;
