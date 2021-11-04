@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
-@RequestMapping("/user-roles")
+@RequestMapping("/api/user-roles")
 public class UserRoleController {
 
     private final UserRoleService service;

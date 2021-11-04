@@ -1,7 +1,7 @@
 package com.smoothstack.utopia.service;
 
 import com.smoothstack.utopia.dao.UserDao;
-import com.smoothstack.utopia.entity.User;
+import com.smoothstack.utopia.entity.UserEntity;
 
 import org.springframework.stereotype.Service;
 
@@ -16,19 +16,19 @@ public class UserService {
         this.dao = dao;
     }
 
-    public void save(final User user) {
+    public void save(final UserEntity user) {
         dao.save(user);
     }
 
-    public List<User> selectAll() {
+    public List<UserEntity> selectAll() {
         return dao.findAll();
     }
 
-    public Optional<User> selectById(final Integer id) {
+    public Optional<UserEntity> selectById(final Integer id) {
         return dao.findById(id);
     }
 
-    public void delete(final User user) {
+    public void delete(final UserEntity user) {
         dao.delete(user);
     }
 }
