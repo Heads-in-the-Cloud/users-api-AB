@@ -1,0 +1,47 @@
+zuul:
+  routes:
+    users:
+      path: /users/**
+      serviceId: users-service
+    user-roles:
+      path: /user-roles/**
+      serviceId: users-service
+    airports:
+      path: /airports/**
+      serviceId: flights-service
+    flights:
+      path: /flights/**
+      serviceId: flights-service
+    airplanes:
+      path: /airplanes/**
+      serviceId: flights-service
+    airplane-types:
+      path: /airplane-types/**
+      serviceId: flights-service
+    routes:
+      path: /routes/**
+      serviceId: flights-service
+    bookings:
+      path: /bookings/**
+      serviceId: bookings-service
+    booking-agents:
+      path: /booking-agents/**
+      serviceId: bookings-service
+    booking-users:
+      path: /booking-users/**
+      serviceId: bookings-service
+    booking-guests:
+      path: /booking-guests/**
+      serviceId: bookings-service
+    booking-payments:
+      path: /booking-payments/**
+      serviceId: bookings-service
+    flight-bookings:
+      path: /flight-bookings/**
+      serviceId: bookings-service
+    passengers:
+      path: /passengers/**
+      serviceId: bookings-service
+bookings-service:
+flights-service:
+users-service:
