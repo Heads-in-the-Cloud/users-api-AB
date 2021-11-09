@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserRoleService {
     private final UserRoleDao dao;
-
-    public UserRoleService(final UserRoleDao dao) {
-        this.dao = dao;
-    }
 
     public void save(final UserRole userRole) {
         dao.save(userRole);

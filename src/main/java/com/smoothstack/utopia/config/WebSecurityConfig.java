@@ -1,9 +1,9 @@
 package com.smoothstack.utopia.config;
 
-import com.smoothstack.utopia.jwtutils.JwtAuthenticationEntryPoint;
-import com.smoothstack.utopia.jwtutils.JwtFilter;
+import com.smoothstack.utopia.filter.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,46 +17,43 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private UserDetailsService userDetailsService;
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+       return new BCryptPasswordEncoder();
+    }
 
-   @Autowired
-   private JwtAuthenticationEntryPoint authenticationEntryPoint;
-   @Autowired
-   private UserDetailsService userDetailsService;
-   @Autowired
-   private JwtFilter filter;
+    @Override
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+       auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
 
-   @Bean
-   public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-   }
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws
+    Exception {
+       return super.authenticationManagerBean();
+    }
 
-   @Override
-   protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-      auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-   }
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        final AthenticationFilter authFilter = new AuthenticationFilter(authenticationManagerBean());
+        authFilter.setFilterProcessUrl("/api/login");
 
-   @Bean
-   @Override
-   public AuthenticationManager authenticationManagerBean() throws
-   Exception {
-      return super.authenticationManagerBean();
-   }
-
-   @Override
-   protected void configure(final HttpSecurity http) throws Exception {
-      http.cors().and().csrf().disable()
-          .authorizeRequests()
-          .antMatchers("/login").permitAll()
-          .anyRequest().authenticated()
-          .and()
-          .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-          .and()
-          .sessionManagement()
-          .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-      http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-   }
-
+        http.csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/api/login").permitAll()
+            .antMatchers("/api/users/**", "/api/user-roles/**").hasAnyAuthority("ADMIN")
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .addFilter(authFilter);
+        http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
 }
 

@@ -12,18 +12,19 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "user_role")
+@NoArgsConstructor
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private Integer id;
 
     @NotNull
     @Size(max = 45)
-    @Getter
-    @Setter
     private String name;
 }

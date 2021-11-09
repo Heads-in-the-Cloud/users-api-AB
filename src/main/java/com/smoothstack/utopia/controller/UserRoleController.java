@@ -20,15 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import lombok.AllArgsConstructor;
+
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/user-roles")
 public class UserRoleController {
 
     private final UserRoleService service;
-
-    public UserRoleController(final UserRoleService service) {
-      this.service = service;
-    }
 
     @PostMapping
     public ResponseEntity<UserRole> create(@Valid @RequestBody final UserRole userRole) {

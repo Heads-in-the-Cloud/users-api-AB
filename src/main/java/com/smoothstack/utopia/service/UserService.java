@@ -1,15 +1,17 @@
 package com.smoothstack.utopia.service;
 
 import com.smoothstack.utopia.dao.UserDao;
-import com.smoothstack.utopia.entity.UserEntity;
+import com.smoothstack.utopia.entity.User;
 
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserService {
     private final UserDao dao;
 
@@ -17,23 +19,19 @@ public class UserService {
         this.dao = dao;
     }
 
-    @Async
-    public void save(final UserEntity user) {
+    public void save(final User user) {
         dao.save(user);
     }
 
-    @Async
-    public List<UserEntity> selectAll() {
+    public List<User> selectAll() {
         return dao.findAll();
     }
 
-    @Async
-    public Optional<UserEntity> selectById(final Integer id) {
+    public Optional<User> selectById(final Integer id) {
         return dao.findById(id);
     }
 
-    @Async
-    public void delete(final UserEntity user) {
+    public void delete(final User user) {
         dao.delete(user);
     }
 }

@@ -1,7 +1,7 @@
 package com.smoothstack.utopia.controller;
 
 import com.smoothstack.utopia.exception.*;
-import com.smoothstack.utopia.entity.UserEntity;
+import com.smoothstack.utopia.entity.User;
 import com.smoothstack.utopia.service.UserService;
 
 import java.util.List;
@@ -20,46 +20,45 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import lombok.AllArgsConstructor;
+
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserService service;
 
-    public UserController(final UserService service) {
-      this.service = service;
-    }
-
     @PostMapping
-    public ResponseEntity<UserEntity> create(@Valid @RequestBody final UserEntity user) {
+    public ResponseEntity<User> create(@Valid @RequestBody final User user) {
         service.save(user);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping
-    public @ResponseBody List<UserEntity> readAll() {
+    public @ResponseBody List<User> readAll() {
         return service.selectAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> readById(@PathVariable final Integer id) {
-        final UserEntity user = service.selectById(id).orElseThrow(NotFoundException::new);
+    public ResponseEntity<User> readById(@PathVariable final Integer id) {
+        final User user = service.selectById(id).orElseThrow(NotFoundException::new);
         return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateById(@PathVariable final Integer id, @Valid @RequestBody final UserEntity user) {
+    public ResponseEntity<String> updateById(@PathVariable final Integer id, @Valid @RequestBody final User user) {
         if(id != user.getId()) {
             throw new InvalidUpdateIdException();
         }
-        final UserEntity _ogUser = service.selectById(id).orElseThrow(NotFoundException::new);
+        final User _ogUser = service.selectById(id).orElseThrow(NotFoundException::new);
         service.save(user);
         return ResponseEntity.ok("User updated successfully");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable final Integer id) {
-        final UserEntity user = service.selectById(id).orElseThrow(NotFoundException::new);
+        final User user = service.selectById(id).orElseThrow(NotFoundException::new);
         service.delete(user);
         return ResponseEntity.noContent().build();
     }
