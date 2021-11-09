@@ -22,12 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    public static final long TOKEN_TIMEOUT_VALIDITY = 10 * 60 * 60;
+    public static final long EXPIRATION_TIMEOUT = 10 * 60 * 60;
+
+    public AuthenticationFilter(final AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     public Authentication attemptAuthentication(
@@ -47,18 +48,21 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         final FilterChain chain,
         final Authentication authentication
     ) throws IOException {
-        final User user = authentication.getPrincipal();
-        final Algorithm algorithm = Algorithm.HMAC256("".getBytes());
-        final String accessToken = JWT.create()
+        final User user = (User) authentication.getPrincipal();
+        final Algorithm algorithm = Algorithm.HMAC512("temp-secret".getBytes());
+        final String token = JWT.create()
             .withSubject(user.getUsername())
-            .withExpiresAt(new Date(new Date().getTime() + TOKEN_TIMEOUT_VALIDITY))
-            .withIssuer(request.getRequestURL())
-            .withClaim("username", user.getusername())
-            .withClaim("role", user.getAuthorities()[0])
+            .withExpiresAt(new Date(new Date().getTime() + EXPIRATION_TIMEOUT))
+            .withIssuer(request.getRequestURL().toString())
+            .withClaim(
+                "role",
+                user.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList())
+            )
             .sign(algorithm);
-        final Map<String, String> tokens = new HashMap<>();
-        tokens.put("access_token", accessToken);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.addHeader("Token", "Bearer " + token);
     }
 }
 
