@@ -43,13 +43,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api/login").permitAll()
-            .antMatchers("/api/users/**", "/api/user-roles/**").hasAnyAuthority("ADMIN")
+            .antMatchers("/api/login", "/api/refresh_token").permitAll()
+            .antMatchers("/api/users/**", "/api/user-roles/**").hasAnyAuthority("Admin")
             .anyRequest().authenticated()
-            .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .addFilter(authFilter);
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().addFilter(authFilter);
         http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

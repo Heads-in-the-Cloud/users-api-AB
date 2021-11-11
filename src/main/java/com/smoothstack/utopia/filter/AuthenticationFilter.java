@@ -3,6 +3,8 @@ package com.smoothstack.utopia.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +22,11 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    public static final long EXPIRATION_TIMEOUT = 10 * 60 * 60;
+    private static final long EXPIRATION_TIMEOUT_ACCESS = 240 * 60 * 1000;
+    private static final long EXPIRATION_TIMEOUT_REFRESH = 120 * 60 * 1000;
 
     public AuthenticationFilter(final AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -50,19 +52,22 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     ) throws IOException {
         final User user = (User) authentication.getPrincipal();
         final Algorithm algorithm = Algorithm.HMAC512("temp-secret".getBytes());
-        final String token = JWT.create()
+        final String accessToken = JWT.create()
             .withSubject(user.getUsername())
-            .withExpiresAt(new Date(new Date().getTime() + EXPIRATION_TIMEOUT))
+            .withExpiresAt(new Date(new Date().getTime() + EXPIRATION_TIMEOUT_ACCESS))
             .withIssuer(request.getRequestURL().toString())
-            .withClaim(
-                "role",
-                user.getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList())
-            )
+            .withClaim("role", user.getAuthorities().iterator().next().getAuthority())
             .sign(algorithm);
-        response.addHeader("Token", "Bearer " + token);
+        final String refreshToken = JWT.create()
+            .withSubject(user.getUsername())
+            .withExpiresAt(new Date(new Date().getTime() + EXPIRATION_TIMEOUT_REFRESH))
+            .withIssuer(request.getRequestURL().toString())
+            .sign(algorithm);
+        final Map<String, String> tokens = new HashMap<>();
+        tokens.put("access_token", accessToken);
+        tokens.put("refresh_token", refreshToken);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 }
 

@@ -36,6 +36,10 @@ public class UserService implements UserDetailsService {
         return dao.findById(id);
     }
 
+    public Optional<User> selectByUsername(final String username) {
+        return dao.findByUsername(username);
+    }
+
     public void delete(final User user) {
         dao.delete(user);
     }

@@ -32,7 +32,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         final HttpServletResponse response,
         final FilterChain filterChain
     ) throws ServletException, IOException {
-        if(request.getServletPath().equals("/api/login")) {
+        if(request.getServletPath().equals("/api/login") || request.getServletPath().equals("/api/token_refresh")) {
             filterChain.doFilter(request, response);
         } else {
             final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -43,14 +43,14 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                     final JWTVerifier verifier = JWT.require(algorithm).build();
                     final DecodedJWT decodedJWT = verifier.verify(token);
                     final String username = decodedJWT.getSubject();
-                    final String role = decodedJWT.getClaim("role").toString();
+                    final String role = decodedJWT.getClaim("role").asString();
                     final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority(role));
                     final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch(final Exception exception) {
-                    response.setHeader("error", exception.getMessage());
+                    response.setHeader("error_message", exception.getMessage());
                     response.setStatus(HttpStatus.FORBIDDEN.value());
                 }
             } else {
