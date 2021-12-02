@@ -23,14 +23,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    private final EnvVariableConfig envConfig;
     private final AuthenticationManager authenticationManager;
     private static final long EXPIRATION_TIMEOUT_ACCESS = 240 * 60 * 1000;
     private static final long EXPIRATION_TIMEOUT_REFRESH = 120 * 60 * 1000;
-
-    public AuthenticationFilter(final AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
 
     @Override
     public Authentication attemptAuthentication(
@@ -51,7 +52,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         final Authentication authentication
     ) throws IOException {
         final User user = (User) authentication.getPrincipal();
-        final Algorithm algorithm = Algorithm.HMAC512("temp-secret".getBytes());
+        final Algorithm algorithm = Algorithm.HMAC512(envConfig.getJwtSecret().getBytes());
         final String accessToken = JWT.create()
             .withSubject(user.getUsername())
             .withExpiresAt(new Date(new Date().getTime() + EXPIRATION_TIMEOUT_ACCESS))

@@ -1,5 +1,7 @@
 package com.smoothstack.utopia.filter;
 
+import com.smoothstack.utopia.config.EnvVariableConfig;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -25,7 +27,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
+
+    private final EnvVariableConfig envConfig;
+
     @Override
     protected void doFilterInternal(
         final HttpServletRequest request,
@@ -39,7 +47,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
                     final String token = authorizationHeader.substring("Bearer ".length());
-                    final Algorithm algorithm = Algorithm.HMAC512("temp-secret".getBytes());
+                    final Algorithm algorithm = Algorithm.HMAC512(envConfig.getJwtSecret().getBytes());
                     final JWTVerifier verifier = JWT.require(algorithm).build();
                     final DecodedJWT decodedJWT = verifier.verify(token);
                     final String username = decodedJWT.getSubject();
