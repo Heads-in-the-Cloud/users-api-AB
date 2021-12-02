@@ -32,7 +32,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
 
-    private final EnvVariableConfig envConfig;
+    //private final EnvVariableConfig envConfig;
 
     @Override
     protected void doFilterInternal(
@@ -47,7 +47,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
                     final String token = authorizationHeader.substring("Bearer ".length());
-                    final Algorithm algorithm = Algorithm.HMAC512(envConfig.getJwtSecret().getBytes());
+                    final Algorithm algorithm = Algorithm.HMAC512("temp-secret".getBytes());
                     final JWTVerifier verifier = JWT.require(algorithm).build();
                     final DecodedJWT decodedJWT = verifier.verify(token);
                     final String username = decodedJWT.getSubject();
