@@ -9,13 +9,13 @@ pipeline {
     }
 
     stages {
-        stage('Package') {
+        stage('Package JAR file') {
             steps {
-                sh "./mvnw package"
+                sh "./mvnw clean package"
             }
         }
 
-        stage('Build') {
+        stage('Build image') {
             steps {
                 script {
                     image = docker.build image_label
@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Push to registry') {
+        stage('Push image to registry') {
             steps {
                 script {
                     docker.withRegistry(USERS_ECR_URI, 'ecr:us-west-2:ecr-creds') {
@@ -34,9 +34,8 @@ pipeline {
             }
         }
 
-        stage('Clean up') {
+        stage('Remove image') {
             steps {
-                sh "./mvnw clean"
                 sh "docker rmi $image_label"
             }
         }
