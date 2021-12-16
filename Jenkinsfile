@@ -2,42 +2,42 @@
 pipeline {
     agent any
 
+    environment {
+        image_label = "ab-users-microservice"
+        git_commit_hash = "${sh(returnStdout: true, script: 'git rev-parse --short=8 HEAD')}"
+        image = ""
+    }
+
     stages {
-        stage('Build') {
+        stage('Package') {
             steps {
                 sh "./mvnw clean package"
-                sh "docker build . -t austinbaugh/utopia-users-microservice:${env.BUILD_ID}"
             }
         }
 
-        stage('Run detached for 30sec') {
+        stage('Build') {
             steps {
-                sh """
-                    docker run -d \
-                        --rm \
-                        --name users-microservice \
-                        --env DB_URL=${env.DB_URL} \
-                        --env DB_USERNAME=${env.DB_USERNAME} \
-                        --env DB_PASSWORD=${env.DB_PASSWORD} \
-                        --env JWT_SECRET=${env.JWT_SECRET} \
-                        -p 8110:8080 \
-                        austinbaugh/utopia-users-microservice:${env.BUILD_ID}
-                """
-                sh "sleep 30"
+                script {
+                    image = docker.build image_label
+                }
             }
         }
 
-        stage('Test') {
+        stage('Push to registry') {
             steps {
-                sh "./test.sh 8110"
+                script {
+                    docker.withRegistry(USERS_ECR_URI_AB, 'ecr:us-west-2:ecr-creds') {
+                        image.push("$git_commit_hash")
+                        image.push('latest')
+                    }
+                }
             }
         }
 
-        stage('Kill') {
+        stage('Clean up') {
             steps {
-                sh "docker kill users-microservice"
+                sh "docker rmi $image_label"
             }
         }
     }
 }
-

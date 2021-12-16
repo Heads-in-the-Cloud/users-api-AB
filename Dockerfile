@@ -1,11 +1,5 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
-
+FROM eclipse-temurin:11-jre-alpine
 WORKDIR /opt/app
-
-ENV JAR_FILE=users-api.jar
-
-COPY target/$JAR_FILE .
-
+COPY target/app.jar .
 EXPOSE 8080
-
-ENTRYPOINT java -jar $JAR_FILE
+ENTRYPOINT java -jar app.jar
