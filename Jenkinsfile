@@ -11,6 +11,12 @@ pipeline {
     }
 
     stages {
+        stage('SonarQube Analysis') {
+            withSonarQubeEnv('SonarQube') {
+                sh './mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+            }
+        }
+
         stage('Package') {
             steps {
                 sh "./mvnw package"
