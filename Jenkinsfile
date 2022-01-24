@@ -25,13 +25,13 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh './mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
-                }
-            }
-        }
+        //stage('SonarQube Analysis') {
+        //    steps {
+        //        withSonarQubeEnv('SonarQube') {
+        //            sh './mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+        //        }
+        //    }
+        //}
 
         stage('Build') {
             steps {
