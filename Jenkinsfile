@@ -7,7 +7,7 @@ pipeline {
         AWS_REGION = sh(script:'aws configure get region', returnStdout: true).trim()
         AWS_ACCOUNT_ID = sh(script:'aws sts get-caller-identity --query "Account" --output text', returnStdout: true).trim()
         ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-        PROJECT_ID  = credentials('project-id')
+        PROJECT_ID  = "AB"
 
         image_label = "flights-microservice"
         image = null
