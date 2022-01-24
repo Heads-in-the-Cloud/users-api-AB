@@ -3,8 +3,13 @@ pipeline {
     agent any
 
     environment {
-        image_label = "users-microservice-ab"
-        commit = sh(returnStdout: true, script: "git rev-parse --short=8 HEAD").trim()
+        COMMIT_HASH = sh(returnStdout: true, script: "git rev-parse --short=8 HEAD").trim()
+        AWS_REGION = sh(script:'aws configure get region', returnStdout: true).trim()
+        AWS_ACCOUNT_ID = sh(script:'aws sts get-caller-identity --query "Account" --output text', returnStdout: true).trim()
+        ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        PROJECT_ID  = credentials('project-id')
+
+        image_label = "flights-microservice"
         image = null
         packaged = false
         built = false
@@ -36,7 +41,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    image = docker.build(image_label)
+                    image = docker.build("$image_label-$PROJECT_ID")
                 }
             }
 
@@ -52,8 +57,8 @@ pipeline {
         stage('Push to registry') {
             steps {
                 script {
-                    ecr_repo_uri ="https://${ORG_ACCOUNT_NUM}.dkr.ecr.${region}.amazonaws.com/${image_label}"
-                    docker.withRegistry(ecr_repo_uri, "ecr:$region:ecr-creds") {
+                    ecr_repo_uri = "$ECR_URI/$image_label-$PROJECT_ID"
+                    docker.withRegistry(ecr_repo_uri, "ecr:$AWS_REGION:ecr-creds") {
                         image.push("$commit")
                         image.push('latest')
                     }
@@ -69,7 +74,7 @@ pipeline {
                     sh "./mvnw clean"
 
                     if(built) {
-                        sh "docker rmi $image_label"
+                        sh "docker rmi $image_label-$PROJECT_ID"
                     }
                 }
             }
