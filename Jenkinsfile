@@ -9,7 +9,7 @@ pipeline {
         ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         PROJECT_ID  = "AB"
 
-        image_label = "users-microservice-$PROJECT_ID.toLowerCase()"
+        image_label = "users-microservice-${PROJECT_ID.toLowerCase()}"
         image = null
         packaged = false
         built = false
