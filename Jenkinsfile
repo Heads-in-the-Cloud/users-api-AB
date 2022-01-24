@@ -9,7 +9,7 @@ pipeline {
         ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         PROJECT_ID  = "AB"
 
-        image_label = "users-microservice"
+        image_label = "users-microservice-$PROJECT_ID.toLowerCase()"
         image = null
         packaged = false
         built = false
@@ -41,7 +41,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    image = docker.build("$image_label-$PROJECT_ID")
+                    image = docker.build(image_label)
                 }
             }
 
@@ -57,7 +57,7 @@ pipeline {
         stage('Push to registry') {
             steps {
                 script {
-                    ecr_repo_uri = "$ECR_URI/$image_label-$PROJECT_ID"
+                    ecr_repo_uri = "$ECR_URI/$image_label"
                     docker.withRegistry(ecr_repo_uri, "ecr:$AWS_REGION:ecr-creds") {
                         image.push("$commit")
                         image.push('latest')
@@ -74,7 +74,7 @@ pipeline {
                     sh "./mvnw clean"
 
                     if(built) {
-                        sh "docker rmi $image_label-$PROJECT_ID"
+                        sh "docker rmi $image_label"
                     }
                 }
             }
