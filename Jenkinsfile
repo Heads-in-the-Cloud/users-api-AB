@@ -19,6 +19,7 @@ pipeline {
         stage('Package') {
             steps {
                 sh "./mvnw package"
+                sh "docker context use default"
             }
 
             post {
@@ -57,9 +58,11 @@ pipeline {
         stage('Push to registry') {
             steps {
                 script {
-                    ecr_repo_uri = "$ECR_URI/$image_label"
-                    docker.withRegistry(ecr_repo_uri, "ecr:$AWS_REGION:ecr-creds") {
-                        image.push("$commit")
+                    docker.withRegistry(
+                        "http://$ECR_URI/$image_label",
+                        "ecr:$AWS_REGION:jenkins"
+                    ) {
+                        image.push("$COMMIT_HASH")
                         image.push('latest')
                     }
                 }
@@ -81,6 +84,3 @@ pipeline {
         }
     }
 }
-
-
-
