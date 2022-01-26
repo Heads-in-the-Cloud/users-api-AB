@@ -2,14 +2,21 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'ProjectId',
+            defaultValue: 'utopia-AB',
+            description: 'Identifier applied to all names'
+        )
+    }
+
     environment {
         COMMIT_HASH = sh(returnStdout: true, script: "git rev-parse --short=8 HEAD").trim()
         AWS_REGION = sh(script:'aws configure get region', returnStdout: true).trim()
         AWS_ACCOUNT_ID = sh(script:'aws sts get-caller-identity --query "Account" --output text', returnStdout: true).trim()
-        ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-        PROJECT_ID  = "AB"
 
-        image_label = "users-microservice-${PROJECT_ID.toLowerCase()}"
+        ecr_uri = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        image_label = "users-microservice-${params.ProjectId.toLowerCase()}"
         image = null
         packaged = false
         built = false
@@ -84,3 +91,4 @@ pipeline {
         }
     }
 }
+
