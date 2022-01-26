@@ -11,11 +11,20 @@ pipeline {
     }
 
     environment {
-        COMMIT_HASH = sh(returnStdout: true, script: "git rev-parse --short=8 HEAD").trim()
-        AWS_REGION = sh(script:'aws configure get region', returnStdout: true).trim()
-        AWS_ACCOUNT_ID = sh(script:'aws sts get-caller-identity --query "Account" --output text', returnStdout: true).trim()
+        COMMIT_HASH = sh(
+            script: "git rev-parse --short=8 HEAD",
+            returnStdout: true
+        ).trim()
+        REGION = sh(
+            script:'aws configure get region',
+            returnStdout: true
+        ).trim()
+        AWS_ACCOUNT_ID = sh(
+            script:'aws sts get-caller-identity --query "Account" --output text',
+            returnStdout: true
+        ).trim()
 
-        ecr_uri = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        ecr_uri = "${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
         image_label = "users-microservice-${params.ProjectId.toLowerCase()}"
         image = null
         packaged = false
@@ -66,8 +75,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry(
-                        "http://$ECR_URI/$image_label",
-                        "ecr:$AWS_REGION:jenkins"
+                        "http://$ecr_uri/$image_label",
+                        "ecr:$REGION:jenkins"
                     ) {
                         image.push("$COMMIT_HASH")
                         image.push('latest')
@@ -91,4 +100,3 @@ pipeline {
         }
     }
 }
-
