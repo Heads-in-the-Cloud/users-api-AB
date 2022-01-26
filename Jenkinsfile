@@ -5,7 +5,7 @@ pipeline {
     parameters {
         string(
             name: 'ProjectId',
-            defaultValue: 'utopia-AB',
+            defaultValue: 'AB-utopia',
             description: 'Identifier applied to all names'
         )
     }
@@ -25,7 +25,7 @@ pipeline {
         ).trim()
 
         ecr_uri = "${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
-        image_label = "users-microservice-${params.ProjectId.toLowerCase()}"
+        image_label = "${params.ProjectId.toLowerCase()}-users-microservice"
         image = null
         packaged = false
         built = false
