@@ -16,9 +16,11 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserService implements UserDetailsService {
     private final UserDao dao;
     private final PasswordEncoder passwordEncoder;
@@ -29,6 +31,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> selectAll() {
+        log.info("Fetching all users");
         return dao.findAll();
     }
 
@@ -48,8 +51,10 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         final Optional<User> user = dao.findByUsername(username);
         if(user.isEmpty()) {
+            log.error("User not found in the database");
             throw new UsernameNotFoundException("User not found in the database");
         } else {
+            log.info("User found in the database: {}", username);
             final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(user.get().getRole().getName()));
             return new org.springframework.security.core.userdetails.User(
